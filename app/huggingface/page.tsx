@@ -139,7 +139,7 @@ export default function HuggingFacePage() {
           </h1>
           <p className="text-muted-foreground">
             Using Hugging Face models to detect facial expressions and change
-            background colors
+            background colours
           </p>
         </div>
 
