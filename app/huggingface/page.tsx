@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { useState, useRef, useEffect, useCallback } from "react"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Loader2, Camera, CameraOff } from "lucide-react"
+import { useState, useRef, useEffect, useCallback } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Loader2, Camera, CameraOff } from "lucide-react";
 
 export default function HuggingFacePage() {
-  const [isActive, setIsActive] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [expression, setExpression] = useState<string | null>(null)
-  const [backgroundColor, setBackgroundColor] = useState("bg-background")
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const streamRef = useRef<MediaStream | null>(null)
+  const [isActive, setIsActive] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [expression, setExpression] = useState<string | null>(null);
+  const [backgroundColour, setBackgroundColour] = useState("bg-background");
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   // Map expressions to colors
   const expressionColors: Record<string, string> = {
@@ -23,116 +23,123 @@ export default function HuggingFacePage() {
     neutral: "bg-gray-100",
     fearful: "bg-green-100",
     disgusted: "bg-orange-100",
-  }
+  };
 
   const startWebcam = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "user" },
-      })
+      });
 
       if (videoRef.current) {
-        videoRef.current.srcObject = stream
-        streamRef.current = stream
-        setIsActive(true)
+        videoRef.current.srcObject = stream;
+        streamRef.current = stream;
+        setIsActive(true);
       }
     } catch (err) {
-      console.error("Error accessing webcam:", err)
+      console.error("Error accessing webcam:", err);
     }
-  }
+  };
 
   const stopWebcam = () => {
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop())
-      streamRef.current = null
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
       if (videoRef.current) {
-        videoRef.current.srcObject = null
+        videoRef.current.srcObject = null;
       }
-      setIsActive(false)
-      setExpression(null)
-      setBackgroundColor("bg-background")
+      setIsActive(false);
+      setExpression(null);
+      setBackgroundColour("bg-background");
     }
-  }
+  };
 
   // Update the captureFrame function to add more error handling and logging
   const captureFrame = useCallback(async () => {
-    if (!isActive || loading) return
+    if (!isActive || loading) return;
 
-    const video = videoRef.current
-    const canvas = canvasRef.current
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
 
-    if (!video || !canvas || video.paused || video.ended) return
+    if (!video || !canvas || video.paused || video.ended) return;
 
-    const context = canvas.getContext("2d")
-    if (!context) return
+    const context = canvas.getContext("2d");
+    if (!context) return;
 
     // Set canvas dimensions to match video
-    canvas.width = video.videoWidth
-    canvas.height = video.videoHeight
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
 
     // Draw the current video frame to the canvas
-    context.drawImage(video, 0, 0, canvas.width, canvas.height)
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     // Convert canvas to blob
     canvas.toBlob(async (blob) => {
-      if (!blob) return
+      if (!blob) return;
 
       try {
-        setLoading(true)
+        setLoading(true);
 
         // Send the image to our API endpoint
-        const formData = new FormData()
-        formData.append("image", blob)
+        const formData = new FormData();
+        formData.append("image", blob);
 
         const response = await fetch("/api/detect-expression-hf", {
           method: "POST",
           body: formData,
-        })
+        });
 
         if (!response.ok) {
-          const errorText = await response.text()
-          console.error("API error:", errorText)
-          throw new Error(`Failed to analyze expression: ${response.status} ${errorText}`)
+          const errorText = await response.text();
+          console.error("API error:", errorText);
+          throw new Error(
+            `Failed to analyze expression: ${response.status} ${errorText}`
+          );
         }
 
-        const data = await response.json()
-        console.log("Expression detected:", data)
+        const data = await response.json();
+        console.log("Expression detected:", data);
 
         if (data.expression) {
-          setExpression(data.expression)
-          setBackgroundColor(expressionColors[data.expression] || "bg-background")
+          setExpression(data.expression);
+          setBackgroundColour(
+            expressionColors[data.expression] || "bg-background"
+          );
         }
       } catch (error) {
-        console.error("Error analyzing expression:", error)
+        console.error("Error analyzing expression:", error);
         // Don't update UI on error to maintain last valid state
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }, "image/jpeg")
-  }, [isActive, loading, expressionColors])
+    }, "image/jpeg");
+  }, [isActive, loading, expressionColors]);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout
+    let interval: NodeJS.Timeout;
 
     if (isActive) {
       // Analyze expression every 1 second
-      interval = setInterval(captureFrame, 1000)
+      interval = setInterval(captureFrame, 1000);
     }
 
     return () => {
-      clearInterval(interval)
-    }
-  }, [isActive, captureFrame])
+      clearInterval(interval);
+    };
+  }, [isActive, captureFrame]);
 
   return (
     <div
-      className={`min-h-screen flex flex-col items-center justify-center p-4 transition-colors duration-500 ${backgroundColor}`}
+      className={`min-h-screen flex flex-col items-center justify-center p-4 transition-colors duration-500 ${backgroundColour}`}
     >
       <div className="w-full max-w-3xl">
         <div className="mb-6 text-center">
-          <h1 className="text-3xl font-bold mb-2">Hugging Face Expression Detector</h1>
+          <h1 className="text-3xl font-bold mb-2">
+            Hugging Face Expression Detector
+          </h1>
           <p className="text-muted-foreground">
-            Using Hugging Face models to detect facial expressions and change background colors
+            Using Hugging Face models to detect facial expressions and change
+            background colors
           </p>
         </div>
 
@@ -143,7 +150,9 @@ export default function HuggingFacePage() {
               autoPlay
               playsInline
               muted
-              className={`w-full h-full object-cover ${isActive ? "block" : "hidden"}`}
+              className={`w-full h-full object-cover ${
+                isActive ? "block" : "hidden"
+              }`}
             />
 
             {!isActive && (
@@ -165,12 +174,17 @@ export default function HuggingFacePage() {
               <p className="font-medium">
                 Current Expression:
                 <span className="ml-2 font-bold">
-                  {expression ? expression.charAt(0).toUpperCase() + expression.slice(1) : "None detected"}
+                  {expression
+                    ? expression.charAt(0).toUpperCase() + expression.slice(1)
+                    : "None detected"}
                 </span>
               </p>
             </div>
 
-            <Button onClick={isActive ? stopWebcam : startWebcam} variant={isActive ? "destructive" : "default"}>
+            <Button
+              onClick={isActive ? stopWebcam : startWebcam}
+              variant={isActive ? "destructive" : "default"}
+            >
               {isActive ? (
                 <>
                   <CameraOff className="mr-2 h-4 w-4" />
@@ -189,5 +203,5 @@ export default function HuggingFacePage() {
         <canvas ref={canvasRef} className="hidden" />
       </div>
     </div>
-  )
+  );
 }
