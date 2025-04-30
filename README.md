@@ -4,7 +4,7 @@ This app is using a Hugging Face model which takes the image from the streaming 
 
 ## 🤗 Hugging Face Model Integration
 
-In `api/detect-expression-hf/route.ts` you will notice an async function that handles a **POST** to the Hugging face model.
+In `api/detect-expression-hf/route.ts` you will notice an async function that handles a **POST** to the Hugging Face model.
 
 ```ts
 const response = await fetch(
