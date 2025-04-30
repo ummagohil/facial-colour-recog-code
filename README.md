@@ -1,6 +1,6 @@
 # 🙂 Emotional Recognition
 
-This app using a Hugging Face model which takes the image from the streaming video and maps it to a weight/score that is sent back to the front-end to determine what colour the background should be.
+This app is using a Hugging Face model which takes the image from the streaming video and maps it to a weight/score that is sent back to the front-end to determine what colour the background should be.
 
 ## 🤗 Hugging Face Model Integration
 
