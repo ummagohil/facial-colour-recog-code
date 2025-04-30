@@ -14,7 +14,7 @@ export default function Home() {
       </p>
 
       <div className="mt-4">
-        <Link href="/huggingface">
+        <Link href="/start-app">
           <Button size="lg" className="min-w-[200px]">
             Start Expression Detection
           </Button>
