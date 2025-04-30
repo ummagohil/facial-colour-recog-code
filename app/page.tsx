@@ -130,7 +130,9 @@ export default function Home() {
   }, [isActive, captureFrame]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-8 text-center">
+    <main
+      className={`flex min-h-screen flex-col items-center justify-center p-8 text-center transition-colors duration-500 ${backgroundColour}`}
+    >
       <h1 className="text-4xl font-bold mb-6">
         Facial Expression Colour Mapper
       </h1>
@@ -141,7 +143,7 @@ export default function Home() {
       </p>
 
       <div
-        className={`min-h-screen flex flex-col items-center justify-center p-4 transition-colors duration-500 ${backgroundColour}`}
+        className={"min-h-screen flex flex-col items-center justify-center p-4"}
       >
         <div className="w-full max-w-3xl">
           <div className="mb-6 text-center">
