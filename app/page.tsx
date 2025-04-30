@@ -142,80 +142,64 @@ export default function Home() {
         surprise!
       </p>
 
-      <div
-        className={"min-h-screen flex flex-col items-center justify-center p-4"}
-      >
-        <div className="w-full max-w-3xl">
-          <div className="mb-6 text-center">
-            <h1 className="text-3xl font-bold mb-2">
-              Hugging Face Expression Detector
-            </h1>
-            <p className="text-muted-foreground">
-              Using Hugging Face models to detect facial expressions and change
-              background colours
+      <Card className="overflow-hidden">
+        <div className="aspect-video relative bg-black flex items-center justify-center">
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+            muted
+            className={`w-full h-full object-cover ${
+              isActive ? "block" : "hidden"
+            }`}
+          />
+
+          {!isActive && (
+            <div className="text-white text-center p-4">
+              <Camera className="mx-auto mb-2 h-12 w-12 opacity-50" />
+              <p>Camera is turned off</p>
+            </div>
+          )}
+
+          {loading && (
+            <div className="absolute top-2 right-2 bg-black/50 text-white p-2 rounded-full">
+              <Loader2 className="h-5 w-5 animate-spin" />
+            </div>
+          )}
+        </div>
+
+        <div className="p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <p className="font-medium">
+              Current Expression:
+              <span className="ml-2 font-bold">
+                {expression
+                  ? expression.charAt(0).toUpperCase() + expression.slice(1)
+                  : "None detected"}
+              </span>
             </p>
           </div>
 
-          <Card className="overflow-hidden">
-            <div className="aspect-video relative bg-black flex items-center justify-center">
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                muted
-                className={`w-full h-full object-cover ${
-                  isActive ? "block" : "hidden"
-                }`}
-              />
-
-              {!isActive && (
-                <div className="text-white text-center p-4">
-                  <Camera className="mx-auto mb-2 h-12 w-12 opacity-50" />
-                  <p>Camera is turned off</p>
-                </div>
-              )}
-
-              {loading && (
-                <div className="absolute top-2 right-2 bg-black/50 text-white p-2 rounded-full">
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                </div>
-              )}
-            </div>
-
-            <div className="p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div>
-                <p className="font-medium">
-                  Current Expression:
-                  <span className="ml-2 font-bold">
-                    {expression
-                      ? expression.charAt(0).toUpperCase() + expression.slice(1)
-                      : "None detected"}
-                  </span>
-                </p>
-              </div>
-
-              <Button
-                onClick={isActive ? stopWebcam : startWebcam}
-                variant={isActive ? "destructive" : "default"}
-              >
-                {isActive ? (
-                  <>
-                    <CameraOff className="mr-2 h-4 w-4" />
-                    Stop Camera
-                  </>
-                ) : (
-                  <>
-                    <Camera className="mr-2 h-4 w-4" />
-                    Start Camera
-                  </>
-                )}
-              </Button>
-            </div>
-          </Card>
-
-          <canvas ref={canvasRef} className="hidden" />
+          <Button
+            onClick={isActive ? stopWebcam : startWebcam}
+            variant={isActive ? "destructive" : "default"}
+          >
+            {isActive ? (
+              <>
+                <CameraOff className="mr-2 h-4 w-4" />
+                Stop Camera
+              </>
+            ) : (
+              <>
+                <Camera className="mr-2 h-4 w-4" />
+                Start Camera
+              </>
+            )}
+          </Button>
         </div>
-      </div>
+      </Card>
+
+      <canvas ref={canvasRef} className="hidden" />
     </main>
   );
 }
