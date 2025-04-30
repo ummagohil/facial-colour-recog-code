@@ -197,7 +197,7 @@ const captureFrame = useCallback(async () => {
 
 ## 🧪 Testing
 
-[TO DO]
+`npm run test`
 
 ## 🧠 Other Considerations
 
