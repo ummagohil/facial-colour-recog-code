@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     const imageBuffer = await image.arrayBuffer()
 
     // Call Hugging Face Inference API for facial expression recognition
-    const response = await fetch("https://api-inference.huggingface.co/models/Rajaram1996/FacialEmoRecog", {
+    const response = await fetch("https://router.huggingface.co/hf-inference/models/dima806/facial_emotions_image_detection", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.HUGGING_FACE_API_KEY}`,
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     if (!response.ok) {
       const error = await response.text()
       console.error("Hugging Face API error:", error)
-      return NextResponse.json({ error: "Failed to analyze expression" }, { status: 500 })
+      return NextResponse.json({ error: `Failed to analyze expression: ${error}` }, { status: response.status })
     }
 
     const result = await response.json()

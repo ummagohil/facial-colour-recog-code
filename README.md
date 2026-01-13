@@ -2,13 +2,24 @@
 
 This app is using a Hugging Face model which takes the image from the streaming video and maps it to a weight/score that is sent back to the front-end to determine what colour the background should be.
 
+## 🛠️ Setup
+
+To run this project, you need to set up the environment variables.
+
+1. Create a `.env.local` file in the root directory.
+2. Add your Hugging Face API key:
+   ```bash
+   HUGGING_FACE_API_KEY=your_api_key_here
+   ```
+   You can get an API key from [Hugging Face](https://huggingface.co/settings/tokens).
+
 ## 🤗 Hugging Face Model Integration
 
 In `api/detect-expression-hf/route.ts` you will notice an async function that handles a **POST** to the Hugging Face model.
 
 ```ts
 const response = await fetch(
-  "https://api-inference.huggingface.co/models/Rajaram1996/FacialEmoRecog",
+  "https://router.huggingface.co/hf-inference/models/dima806/facial_emotions_image_detection",
   {
     method: "POST",
     headers: {
