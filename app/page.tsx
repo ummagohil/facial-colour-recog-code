@@ -66,11 +66,12 @@ export default function Home() {
     const context = canvas.getContext("2d");
     if (!context) return;
 
-    // Set canvas dimensions to match video
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    // Set canvas dimensions to match model input (224x224)
+    // This significantly reduces payload size and latency
+    canvas.width = 224;
+    canvas.height = 224;
 
-    // Draw the current video frame to the canvas
+    // Draw the current video frame to the canvas (resizing it)
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     // Convert canvas to blob
@@ -112,7 +113,7 @@ export default function Home() {
       } finally {
         setLoading(false);
       }
-    }, "image/jpeg");
+    }, "image/jpeg", 0.8); // Reduce quality to 80%
   }, [isActive, loading, expressionColors]);
 
   useEffect(() => {
@@ -148,9 +149,8 @@ export default function Home() {
             autoPlay
             playsInline
             muted
-            className={`w-full h-full object-cover ${
-              isActive ? "block" : "hidden"
-            }`}
+            className={`w-full h-full object-cover ${isActive ? "block" : "hidden"
+              }`}
           />
 
           {!isActive && (
