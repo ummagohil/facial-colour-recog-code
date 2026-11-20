@@ -1,3 +1,5 @@
+import { fileURLToPath } from "node:url"
+
 let userConfig = undefined
 try {
   // try to import ESM first
@@ -13,12 +15,7 @@ try {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+  outputFileTracingRoot: fileURLToPath(new URL(".", import.meta.url)),
   images: {
     unoptimized: true,
   },
